@@ -18,6 +18,7 @@ public final class EmirNametags extends JavaPlugin {
     private boolean papiEnabled;
     private boolean luckPermsEnabled;
     private LuckPerms luckPerms;
+    private boolean skriptEnabled;
 
     public static EmirNametags get() {
         return instance;
@@ -44,12 +45,17 @@ public final class EmirNametags extends JavaPlugin {
         return luckPerms;
     }
 
+    public boolean isSkriptEnabled() {
+        return skriptEnabled;
+    }
+
     @Override
     public void onEnable() {
         instance = this;
         config = new ConfigHandler();
         nametagManager = new NametagManager();
         papiEnabled = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
+        skriptEnabled = Bukkit.getPluginManager().isPluginEnabled("Skript");
 
         RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
         if (provider != null) {

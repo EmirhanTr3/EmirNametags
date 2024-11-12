@@ -23,8 +23,9 @@ public class ConfigHandler {
         this.yamlFile.addDefault("nametag.interval", 1);
         this.yamlFile.setComment("nametag.text", """
                 The text of nametag.
-                Supports PlaceholderAPI and MiniMessage.
-                Placeholders must be in format: <placeholder:player_name>, <papi:player_name> or <p:player_name>""");
+                Supports PlaceholderAPI, MiniMessage and Skript.
+                Placeholders must be in format: <placeholder:player_name>, <papi:player_name> or <p:player_name>
+                Skript variables can be accessed with <skript:variable> or <sk:variable>. Supports %uuid%, example: <skript:level::%uuid%>""");
         this.yamlFile.addDefault("nametag.text", List.of("<p:displayname>"));
         this.yamlFile.setComment("nametag.billboard", """
                 The billboard of nametag.
