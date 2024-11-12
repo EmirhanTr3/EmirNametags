@@ -1,0 +1,14 @@
+name: EmirNametags
+version: '1.0.0'
+main: xyz.emirdev.emirnametags.EmirNametags
+api-version: '1.21'
+authors: [ EmirhanTr3 ]
+loader: xyz.emirdev.emirnametags.EmirNametagsPluginLoader
+dependencies:
+  server:
+    PlaceholderAPI:
+      load: BEFORE
+      required: false
+    LuckPerms:
+      load: BEFORE
+      required: false
