@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
@@ -35,6 +36,7 @@ public class Nametag {
         Location location = player.getEyeLocation();
         location.setYaw(0);
         location.setPitch(0);
+
 
         textDisplay = (TextDisplay) player.getWorld().spawnEntity(
                 location,
@@ -114,6 +116,19 @@ public class Nametag {
             }
         } else if (!player.canSee(textDisplay)) {
             player.showEntity(EmirNametags.get(), textDisplay);
+        }
+
+        double scale = player.getAttribute(Attribute.GENERIC_SCALE).getValue();
+        Transformation transformation = textDisplay.getTransformation();
+        Vector3f scaleVector = new Vector3f((float) scale, (float) scale, (float) scale);
+
+        if (!transformation.getScale().equals(scaleVector)) {
+            textDisplay.setTransformation(new Transformation(
+                    transformation.getTranslation(),
+                    transformation.getLeftRotation(),
+                    scaleVector,
+                    transformation.getRightRotation()
+            ));
         }
 
     }
