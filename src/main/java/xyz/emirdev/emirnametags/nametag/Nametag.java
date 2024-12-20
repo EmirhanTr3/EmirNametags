@@ -118,6 +118,14 @@ public class Nametag {
             player.showEntity(EmirNametags.get(), textDisplay);
         }
 
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!player.canSee(this.player) && player.canSee(textDisplay)) {
+                player.hideEntity(EmirNametags.get(), textDisplay);
+            } else if (player.canSee(this.player) && !player.canSee(textDisplay)) {
+                player.showEntity(EmirNametags.get(), textDisplay);
+            }
+        }
+
         double scale = player.getAttribute(Attribute.GENERIC_SCALE).getValue();
         Transformation transformation = textDisplay.getTransformation();
         Vector3f scaleVector = new Vector3f((float) scale, (float) scale, (float) scale);

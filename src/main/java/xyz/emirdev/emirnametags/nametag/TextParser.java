@@ -34,7 +34,12 @@ public class TextParser {
 
     public static TagResolver placeholderTag(Player player) {
         return TagResolver.resolver(Set.of("placeholder", "papi", "p"), (argumentQueue, context) -> {
-            final String placeholder = argumentQueue.popOr("placeholder tag requires an argument").value();
+            List<String> strings = new ArrayList<>();
+            while (argumentQueue.hasNext()) {
+                strings.add(argumentQueue.pop().value());
+            }
+            final String placeholder = String.join(":", strings);
+
             switch (placeholder) {
                 case "name" -> {
                     return Tag.selfClosingInserting(player.name());
