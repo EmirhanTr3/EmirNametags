@@ -10,6 +10,7 @@ import revxrsal.commands.bukkit.actor.BukkitCommandActor;
 import xyz.emirdev.emirnametags.commands.MainCommand;
 import xyz.emirdev.emirnametags.handlers.ConfigHandler;
 import xyz.emirdev.emirnametags.nametag.NametagManager;
+import xyz.emirdev.emirnametags.nametag.TextParser;
 
 public final class EmirNametags extends JavaPlugin {
     private static EmirNametags instance;
@@ -29,6 +30,7 @@ public final class EmirNametags extends JavaPlugin {
     }
 
     public void reloadPluginConfig() {
+        TextParser.clearPlaceholderCache();
         config.loadFile();
         nametagManager.reloadNametags();
     }

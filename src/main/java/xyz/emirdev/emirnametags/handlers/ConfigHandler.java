@@ -2,13 +2,13 @@ package xyz.emirdev.emirnametags.handlers;
 
 import org.bukkit.Color;
 import org.bukkit.entity.Display;
+import org.simpleyaml.configuration.MemorySection;
 import org.simpleyaml.configuration.file.YamlFile;
 import xyz.emirdev.emirnametags.EmirNametags;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class ConfigHandler {
     private static final File DATA_FILE = new File(EmirNametags.get().getDataFolder(), "config.yml");
@@ -39,6 +39,12 @@ public class ConfigHandler {
         this.yamlFile.addDefault("nametag.offset-y", 0.15);
         this.yamlFile.setComment("nametag.seeself", "Whether the player can see their own nametag.");
         this.yamlFile.addDefault("nametag.seeself", false);
+
+        Map<String, Integer> examplePlaceholders = new HashMap<>();
+        examplePlaceholders.put("%example%", 100);
+
+        this.yamlFile.setComment("placeholder", "Set ticks of cache per placeholder.");
+        this.yamlFile.addDefault("placeholder", examplePlaceholders);
 
         saveFile();
     }
@@ -90,5 +96,16 @@ public class ConfigHandler {
 
     public boolean canSeeSelfNametag() {
         return this.yamlFile.getBoolean("nametag.seeself");
+    }
+
+    public int getPlaceholderCacheTicks(String placeholder) {
+        if (!placeholder.startsWith("%") && !placeholder.endsWith("%")) {
+            placeholder = "%" + placeholder + "%";
+        }
+
+        MemorySection section = (MemorySection) this.yamlFile.get("placeholder");
+        Map<String, Object> values = section.getMapValues(false);
+
+        return (int) Objects.requireNonNullElse(values.get(placeholder), 0);
     }
 }

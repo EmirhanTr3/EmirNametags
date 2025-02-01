@@ -12,12 +12,47 @@ import net.luckperms.api.model.user.User;
 import org.bukkit.entity.Player;
 import xyz.emirdev.emirnametags.EmirNametags;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.time.Instant;
+import java.util.*;
 
 public class TextParser {
+    private static final Map<UUID, Map<String, CachedPlaceholder>> placeholderCache = new HashMap<>();
+
+    private static class CachedPlaceholder {
+        private final Component value;
+        private final Instant cachedAt;
+        private final int cacheTime;
+
+        public CachedPlaceholder(String placeholder, Component value) {
+            this.value = value;
+            this.cachedAt = Instant.now();
+            this.cacheTime = EmirNametags.get().getPluginConfig().getPlaceholderCacheTicks(placeholder);
+        }
+
+        public Component getValue() {
+            return value;
+        }
+
+        public boolean isExpired() {
+            return cachedAt.plusSeconds(cacheTime / 20).isBefore(Instant.now());
+        }
+    }
+
+    private static void cachePlaceholder(Player player, String placeholder, Component value) {
+        if (placeholderCache.containsKey(player.getUniqueId())) {
+            Map<String, CachedPlaceholder> cachedPlaceholders = placeholderCache.get(player.getUniqueId());
+            cachedPlaceholders.put(placeholder, new CachedPlaceholder(placeholder, value));
+        } else {
+            Map<String, CachedPlaceholder> cachedPlaceholders = new HashMap<>();
+            cachedPlaceholders.put(placeholder, new CachedPlaceholder(placeholder, value));
+            placeholderCache.put(player.getUniqueId(), cachedPlaceholders);
+        }
+    }
+
+    public static void clearPlaceholderCache() {
+        placeholderCache.clear();
+    }
+
     public static Component parse(String input, Player player) {
         return MiniMessage.builder()
                 .tags(TagResolver.builder()
@@ -40,6 +75,16 @@ public class TextParser {
             }
             final String placeholder = String.join(":", strings);
 
+            if (placeholderCache.containsKey(player.getUniqueId())) {
+                Map<String, CachedPlaceholder> cachedPlaceholders = placeholderCache.get(player.getUniqueId());
+                if (cachedPlaceholders.containsKey(placeholder)) {
+                    CachedPlaceholder cachedPlaceholder = cachedPlaceholders.get(placeholder);
+                    if (!cachedPlaceholder.isExpired()) {
+                        return Tag.selfClosingInserting(cachedPlaceholder.getValue());
+                    }
+                }
+            }
+
             switch (placeholder) {
                 case "name" -> {
                     return Tag.selfClosingInserting(player.name());
@@ -60,10 +105,13 @@ public class TextParser {
 
                     if (parsedPlaceholder.contains(LegacyComponentSerializer.AMPERSAND_CHAR + "")) {
                         Component componentPlaceholder = LegacyComponentSerializer.legacyAmpersand().deserialize(parsedPlaceholder);
+                        cachePlaceholder(player, placeholder, componentPlaceholder);
                         return Tag.selfClosingInserting(componentPlaceholder);
                     }
 
-                    return Tag.selfClosingInserting(MiniMessage.miniMessage().deserialize(parsedPlaceholder));
+                    Component componentPlaceholder = MiniMessage.miniMessage().deserialize(parsedPlaceholder);
+                    cachePlaceholder(player, placeholder, componentPlaceholder);
+                    return Tag.selfClosingInserting(componentPlaceholder);
                 }
             }
         });
