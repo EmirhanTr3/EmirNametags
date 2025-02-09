@@ -1,5 +1,7 @@
 package xyz.emirdev.emirnametags.nametag;
 
+import ch.njol.skript.lang.function.Function;
+import ch.njol.skript.lang.function.Functions;
 import ch.njol.skript.variables.Variables;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
@@ -59,7 +61,8 @@ public class TextParser {
                         .resolvers(
                                 StandardTags.defaults(),
                                 placeholderTag(player),
-                                skriptTag(player)
+                                skriptTag(player),
+                                skriptFunctionTag(player)
                         )
                         .build()
                 )
@@ -130,6 +133,23 @@ public class TextParser {
                     .replaceAll("%uuid%", player.getUniqueId().toString());
 
             String value = String.valueOf(Variables.getVariable(variable, null, false));
+            return Tag.selfClosingInserting(Component.text(value));
+        });
+    }
+
+    public static TagResolver skriptFunctionTag(Player player) {
+        return TagResolver.resolver(Set.of("skriptfunction", "skf"), (argumentQueue, context) -> {
+            String functionName = argumentQueue.pop().value();
+            if (!EmirNametags.get().isSkriptEnabled()) return Tag.selfClosingInserting(Component.text(functionName));
+
+            Function<?> function = Functions.getGlobalFunction(functionName);
+            if (function == null) return Tag.selfClosingInserting(Component.text(functionName));
+
+            Object[][] params = {{player}};
+
+            Object[] returnValue = function.execute(params);
+            String value = String.valueOf(returnValue[0]);
+
             return Tag.selfClosingInserting(Component.text(value));
         });
     }

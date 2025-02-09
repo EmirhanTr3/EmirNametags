@@ -25,7 +25,8 @@ public class ConfigHandler {
                 The text of nametag.
                 Supports PlaceholderAPI, MiniMessage and Skript.
                 Placeholders must be in format: <placeholder:player_name>, <papi:player_name> or <p:player_name>
-                Skript variables can be accessed with <skript:variable> or <sk:variable>. Supports %uuid%, example: <skript:level::%uuid%>""");
+                Skript variables can be accessed with <skript:variable> or <sk:variable>. Supports %uuid%, example: <skript:level::%uuid%>
+                Skript functions can be executed for an output with <skriptfunction:functionname> or <skf:functionname>. The function will be ran with 1 parameter which is the player.""");
         this.yamlFile.addDefault("nametag.text", List.of("<p:displayname>"));
         this.yamlFile.setComment("nametag.billboard", """
                 The billboard of nametag.
