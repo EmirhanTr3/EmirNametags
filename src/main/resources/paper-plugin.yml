@@ -1,7 +1,7 @@
 name: EmirNametags
 version: '1.0.0'
 main: xyz.emirdev.emirnametags.EmirNametags
-api-version: '1.21'
+api-version: '1.21.4'
 authors: [ EmirhanTr3 ]
 loader: xyz.emirdev.emirnametags.EmirNametagsPluginLoader
 dependencies:

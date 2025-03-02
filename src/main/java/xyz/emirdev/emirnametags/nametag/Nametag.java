@@ -126,7 +126,7 @@ public class Nametag {
             }
         }
 
-        double scale = player.getAttribute(Attribute.GENERIC_SCALE).getValue();
+        double scale = player.getAttribute(Attribute.SCALE).getValue();
         Transformation transformation = textDisplay.getTransformation();
         Vector3f scaleVector = new Vector3f((float) scale, (float) scale, (float) scale);
 
