@@ -1,5 +1,5 @@
 name: EmirNametags
-version: '1.0.0'
+version: '1.0.1'
 main: xyz.emirdev.emirnametags.EmirNametags
 api-version: '1.21.4'
 authors: [ EmirhanTr3 ]
