@@ -97,7 +97,15 @@ public class TextParser {
                         User user = EmirNametags.get().getLuckPerms().getPlayerAdapter(Player.class).getUser(player);
                         String prefix = Objects.requireNonNullElse(user.getCachedData().getMetaData().getPrefix(), "");
                         String suffix = Objects.requireNonNullElse(user.getCachedData().getMetaData().getSuffix(), "");
-                        return Tag.selfClosingInserting(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix + player.getName() + suffix));
+                        String displayName = prefix + player.getName() + suffix;
+
+                        if (displayName.contains(LegacyComponentSerializer.AMPERSAND_CHAR + "")) {
+                            Component componentPlaceholder = LegacyComponentSerializer.legacyAmpersand().deserialize(placeholder);
+                            return Tag.selfClosingInserting(componentPlaceholder);
+                        }
+
+                        Component componentPlaceholder = MiniMessage.miniMessage().deserialize(displayName);
+                        return Tag.selfClosingInserting(componentPlaceholder);
                     }
                     return Tag.selfClosingInserting(player.displayName());
                 }
